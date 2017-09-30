@@ -106,6 +106,6 @@ private:
 		}
 	}
 
-protected:
+public:
 	unsigned int program;
 };
