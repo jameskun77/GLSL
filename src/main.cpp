@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
 
 		//first transform
 		//scale -> rotation -> translation
-		glm::mat4 scals, rotats, trans;
+		/*glm::mat4 scals, rotats, trans;
 		scals = glm::scale(scals, glm::vec3(0.5, 0.5, 0.5));
 		rotats = glm::rotate(rotats, glm::radians((float)glfwGetTime() * 50), glm::vec3(0.0, 0.0, 1.0));
 		trans = glm::translate(trans, glm::vec3(0.75f, 0.75f, 0.0f));
@@ -89,26 +89,41 @@ int main(int argc, char* argv[])
 		unsigned int transformLoc = glGetUniformLocation(shader.program, "transform");
 		if (transformLoc)
 		{
-			glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans*rotats*scals));
-		}
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans*rotats*scals));
+		}*/
 
+		//add Model View Projection
+		glm::mat4 mods, views, projects;
+
+		mods = glm::rotate(mods, glm::radians(-55.0f), glm::vec3(1.0, 0.0, 0.0));
+		views = glm::translate(views, glm::vec3(0.0f, 0.0f, -3.0f));
+		projects = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+
+		// retrieve the matrix uniform locations
+		unsigned int modelLoc = glGetUniformLocation(shader.program, "model");
+		unsigned int viewLoc = glGetUniformLocation(shader.program, "view");
+		unsigned int projLoc = glGetUniformLocation(shader.program, "project");
+		// pass them to the shaders (3 different ways)
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(mods));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &views[0][0]);
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projects));
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		//second transform
-		scals = glm::mat4();
-		rotats = glm::mat4();
-		trans = glm::mat4();
-		scals = glm::scale(scals, glm::vec3(0.5, 0.5, 0.5));
-		rotats = glm::rotate(rotats, glm::radians(-(float)glfwGetTime() * 50), glm::vec3(0.0, 0.0, 1.0));
-		trans = glm::translate(trans, glm::vec3(-0.75f, 0.75f, 0.0f));
+		//scals = glm::mat4();
+		//rotats = glm::mat4();
+		//trans = glm::mat4();
+		//scals = glm::scale(scals, glm::vec3(0.5, 0.5, 0.5));
+		//rotats = glm::rotate(rotats, glm::radians(-(float)glfwGetTime() * 50), glm::vec3(0.0, 0.0, 1.0));
+		//trans = glm::translate(trans, glm::vec3(-0.75f, 0.75f, 0.0f));
 
-		//unsigned int transformLoc = glGetUniformLocation(shader.program, "transform");
-		if (transformLoc)
-		{
-			glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans*rotats*scals));
-		}
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		////unsigned int transformLoc = glGetUniformLocation(shader.program, "transform");
+		//if (transformLoc)
+		//{
+		//	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans*rotats*scals));
+		//}
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
