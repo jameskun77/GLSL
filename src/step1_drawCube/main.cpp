@@ -19,7 +19,7 @@ void initData();
 const int windowWidth = 800;
 const int windowHeight = 600;
 
-unsigned int VAO, VBO, EBO;
+unsigned int VAO, VBO;
 unsigned int texture1,texture2;
 
 float blendFactor = 0.2;
@@ -54,7 +54,9 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
-	Shader shader(FileSystem::getPath("resources/shader/vertexShader").c_str(),FileSystem::getPath("resources/shader/fragmentShader").c_str());
+	glEnable(GL_DEPTH_TEST);
+
+	Shader shader(FileSystem::getPath("resources/shader/step1_drawCube/vertexShader").c_str(),FileSystem::getPath("resources/shader/step1_drawCube/fragmentShader").c_str());
 	initData();
 	shader.use();
 	
@@ -67,7 +69,7 @@ int main(int argc, char* argv[])
 
 		//Render
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		
 		glBindVertexArray(VAO);
@@ -79,23 +81,10 @@ int main(int argc, char* argv[])
 		glBindTexture(GL_TEXTURE_2D, texture2);
 		shader.setFloat("factor", blendFactor);
 
-		//first transform
-		//scale -> rotation -> translation
-		/*glm::mat4 scals, rotats, trans;
-		scals = glm::scale(scals, glm::vec3(0.5, 0.5, 0.5));
-		rotats = glm::rotate(rotats, glm::radians((float)glfwGetTime() * 50), glm::vec3(0.0, 0.0, 1.0));
-		trans = glm::translate(trans, glm::vec3(0.75f, 0.75f, 0.0f));
-
-		unsigned int transformLoc = glGetUniformLocation(shader.program, "transform");
-		if (transformLoc)
-		{
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans*rotats*scals));
-		}*/
-
 		//add Model View Projection
 		glm::mat4 mods, views, projects;
 
-		mods = glm::rotate(mods, glm::radians(-55.0f), glm::vec3(1.0, 0.0, 0.0));
+		mods = glm::rotate(mods, (float)glfwGetTime(), glm::vec3(1.0, 0.5, 0.0));
 		views = glm::translate(views, glm::vec3(0.0f, 0.0f, -3.0f));
 		projects = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 
@@ -103,27 +92,12 @@ int main(int argc, char* argv[])
 		unsigned int modelLoc = glGetUniformLocation(shader.program, "model");
 		unsigned int viewLoc = glGetUniformLocation(shader.program, "view");
 		unsigned int projLoc = glGetUniformLocation(shader.program, "project");
-		// pass them to the shaders (3 different ways)
+
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(mods));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &views[0][0]);
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projects));
 
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-		//second transform
-		//scals = glm::mat4();
-		//rotats = glm::mat4();
-		//trans = glm::mat4();
-		//scals = glm::scale(scals, glm::vec3(0.5, 0.5, 0.5));
-		//rotats = glm::rotate(rotats, glm::radians(-(float)glfwGetTime() * 50), glm::vec3(0.0, 0.0, 1.0));
-		//trans = glm::translate(trans, glm::vec3(-0.75f, 0.75f, 0.0f));
-
-		////unsigned int transformLoc = glGetUniformLocation(shader.program, "transform");
-		//if (transformLoc)
-		//{
-		//	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans*rotats*scals));
-		//}
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -131,7 +105,6 @@ int main(int argc, char* argv[])
 
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
 
 	glfwTerminate();
 
@@ -143,18 +116,47 @@ void initData()
 	//vertex buffer
 	float vertexData[] =
 	{    
-		//position        //color       //uv
-		-0.5f,-0.5f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,
-		 0.5f,-0.5f,0.0f,0.0f,1.0f,0.0f,1.0f,0.0f,
-		 0.5f, 0.5f,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f,
-		-0.5f, 0.5f,0.0f,1.0f,1.0f,0.0f,0.0f,1.0f
-	};
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f, 0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
 
-	//index buffer
-	unsigned int indexData[] =
-	{
-		0,1,3,
-		3,1,2
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+		 0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+		 0.5f,  0.5f, 0.5f, 1.0f, 1.0f,
+		 0.5f,  0.5f, 0.5f, 1.0f, 1.0f,
+		-0.5f,  0.5f, 0.5f, 0.0f, 1.0f,
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+
+		-0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f, 0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
+
+		0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
+		0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
+		0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+		0.5f, -0.5f,  0.5f, 0.0f, 0.0f,
+		0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f, 1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f, 1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f, 0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+
+		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+		 0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+		 0.5f, 0.5f,  0.5f, 1.0f, 0.0f,
+		 0.5f, 0.5f,  0.5f, 1.0f, 0.0f,
+		-0.5f, 0.5f,  0.5f, 0.0f, 0.0f,
+		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f
 	};
 
 	glGenVertexArrays(1, &VAO);
@@ -164,26 +166,20 @@ void initData()
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
 
-	glGenBuffers(1, &EBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); 
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indexData), indexData, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
 
 	//texture1
 	glGenTextures(1, &texture1);
 	glBindTexture(GL_TEXTURE_2D, texture1);
 	
 	//wrap
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE/*GL_REPEAT*/);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE/*GL_REPEAT*/);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	//filter
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
