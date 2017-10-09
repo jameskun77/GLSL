@@ -1,5 +1,9 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
 #include "Shader.h"
 #include "Filesystem.h"
 
@@ -75,6 +79,35 @@ int main(int argc, char* argv[])
 		glBindTexture(GL_TEXTURE_2D, texture2);
 		shader.setFloat("factor", blendFactor);
 
+		//first transform
+		//scale -> rotation -> translation
+		glm::mat4 scals, rotats, trans;
+		scals = glm::scale(scals, glm::vec3(0.5, 0.5, 0.5));
+		rotats = glm::rotate(rotats, glm::radians((float)glfwGetTime() * 50), glm::vec3(0.0, 0.0, 1.0));
+		trans = glm::translate(trans, glm::vec3(0.75f, 0.75f, 0.0f));
+
+		unsigned int transformLoc = glGetUniformLocation(shader.program, "transform");
+		if (transformLoc)
+		{
+			glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans*rotats*scals));
+		}
+
+
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		//second transform
+		scals = glm::mat4();
+		rotats = glm::mat4();
+		trans = glm::mat4();
+		scals = glm::scale(scals, glm::vec3(0.5, 0.5, 0.5));
+		rotats = glm::rotate(rotats, glm::radians(-(float)glfwGetTime() * 50), glm::vec3(0.0, 0.0, 1.0));
+		trans = glm::translate(trans, glm::vec3(-0.75f, 0.75f, 0.0f));
+
+		//unsigned int transformLoc = glGetUniformLocation(shader.program, "transform");
+		if (transformLoc)
+		{
+			glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans*rotats*scals));
+		}
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
@@ -97,9 +130,9 @@ void initData()
 	{    
 		//position        //color       //uv
 		-0.5f,-0.5f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,
-		 0.5f,-0.5f,0.0f,0.0f,1.0f,0.0f,2.0f,0.0f,
-		 0.5f, 0.5f,0.0f,0.0f,0.0f,1.0f,2.0f,2.0f,
-		-0.5f, 0.5f,0.0f,1.0f,1.0f,0.0f,0.0f,2.0f
+		 0.5f,-0.5f,0.0f,0.0f,1.0f,0.0f,1.0f,0.0f,
+		 0.5f, 0.5f,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f,
+		-0.5f, 0.5f,0.0f,1.0f,1.0f,0.0f,0.0f,1.0f
 	};
 
 	//index buffer
