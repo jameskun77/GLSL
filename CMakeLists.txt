@@ -17,6 +17,9 @@ set(STEP1_DRAWRECT_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
 set(STEP1_DRAWCUBE_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
 	${SOURCE_DIR}/step1_drawCube/main.cpp)
 
+set(STEP1_CAMERACLASS_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
+	${SOURCE_DIR}/step1_cameraClass/main.cpp)
+
 message(STATUS "Current directory: " ${CMAKE_SOURCE_DIR})
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/includes)
@@ -27,6 +30,10 @@ add_executable(DrawRect ${STEP1_DRAWRECT_SOURCE_LIST})
 
 add_executable(DrawCube ${STEP1_DRAWCUBE_SOURCE_LIST})
 
+add_executable(CameraClass ${STEP1_CAMERACLASS_SOURCE_LIST})
+
 target_link_libraries(DrawRect glfw3.lib)
 
 target_link_libraries(DrawCube glfw3.lib)
+
+target_link_libraries(CameraClass glfw3.lib)
