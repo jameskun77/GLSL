@@ -24,6 +24,13 @@ unsigned int texture1,texture2;
 
 float blendFactor = 0.2;
 
+glm::vec3 cameraPos	  = glm::vec3(0.0f, 0.0f,  3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+
+float deltatime = 0.0f;
+float lastframe = 0.0f;
+
 int main(int argc, char* argv[])
 {
 	glfwInit();
@@ -63,8 +70,16 @@ int main(int argc, char* argv[])
 	shader.setInt("texture1", 0);
 	shader.setInt("texture2", 1);
 
+	glm::mat4 projections;
+	projections = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+	shader.setMatrix4("project", projections);
+
 	while (!glfwWindowShouldClose(window))
 	{	
+		float currentTime = glfwGetTime();
+		deltatime = currentTime - lastframe;
+		lastframe = currentTime;
+
 		processInput(window);
 
 		//Render
@@ -82,20 +97,18 @@ int main(int argc, char* argv[])
 		shader.setFloat("factor", blendFactor);
 
 		//add Model View Projection
-		glm::mat4 mods, views, projects;
+		glm::mat4 mods, views;
 
 		mods = glm::rotate(mods, (float)glfwGetTime(), glm::vec3(1.0, 0.5, 0.0));
-		views = glm::translate(views, glm::vec3(0.0f, 0.0f, -3.0f));
-		projects = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+
+		views = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
 		// retrieve the matrix uniform locations
 		unsigned int modelLoc = glGetUniformLocation(shader.program, "model");
 		unsigned int viewLoc = glGetUniformLocation(shader.program, "view");
-		unsigned int projLoc = glGetUniformLocation(shader.program, "project");
 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(mods));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &views[0][0]);
-		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projects));
 
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
@@ -254,4 +267,27 @@ void processInput(GLFWwindow *window)
 			blendFactor = 0.0f;
 		}
 	}
+
+	float cameraSpeed = 2.5 * deltatime;
+
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	{
+		cameraPos += cameraSpeed * cameraFront;
+	}
+		
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	{
+		cameraPos -= cameraSpeed * cameraFront;
+	}
+		
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	{
+		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	}
+		
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	{
+		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	}
 }
+		

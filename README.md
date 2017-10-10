@@ -2,4 +2,4 @@
 
 a) step1 part(draw rect,cube)
 1. use key_up or key_down to set blend factor
-2. texture1 wrap is clamp_edge,texture2 wrap is repeat
+2. use key_A,key_D,key_W,key_S to set camera position(draw cube)
