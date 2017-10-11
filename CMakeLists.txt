@@ -19,6 +19,10 @@ set(STEP1_DRAWCUBE_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
 
 set(STEP1_CAMERACLASS_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
 	${SOURCE_DIR}/step1_cameraClass/main.cpp)
+	
+set(STEP2_LIGHTDIFFUSE_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
+	${SOURCE_DIR}/step2_lightDiffuse/main.cpp)
+
 
 message(STATUS "Current directory: " ${CMAKE_SOURCE_DIR})
 
@@ -32,8 +36,12 @@ add_executable(DrawCube ${STEP1_DRAWCUBE_SOURCE_LIST})
 
 add_executable(CameraClass ${STEP1_CAMERACLASS_SOURCE_LIST})
 
+add_executable(LightPhongModel ${STEP2_LIGHTDIFFUSE_SOURCE_LIST})
+
 target_link_libraries(DrawRect glfw3.lib)
 
 target_link_libraries(DrawCube glfw3.lib)
 
 target_link_libraries(CameraClass glfw3.lib)
+
+target_link_libraries(LightPhongModel glfw3.lib)
