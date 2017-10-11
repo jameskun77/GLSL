@@ -25,7 +25,10 @@ set(STEP2_LIGHTDIFFUSE_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
 
 set(STEP2_LIGHTTEXTURE_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
 	${SOURCE_DIR}/step2_lightTexture/main.cpp)
-
+	
+set(STEP2_MUTIPLELIGHT_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
+	${SOURCE_DIR}/step2_multipleLight/main.cpp)
+	
 message(STATUS "Current directory: " ${CMAKE_SOURCE_DIR})
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/includes)
@@ -42,6 +45,8 @@ add_executable(LightPhongModel ${STEP2_LIGHTDIFFUSE_SOURCE_LIST})
 
 add_executable(LightTexture ${STEP2_LIGHTTEXTURE_SOURCE_LIST})
 
+add_executable(MultipleLight ${STEP2_MUTIPLELIGHT_SOURCE_LIST})
+
 target_link_libraries(DrawRect glfw3.lib)
 
 target_link_libraries(DrawCube glfw3.lib)
@@ -51,3 +56,5 @@ target_link_libraries(CameraClass glfw3.lib)
 target_link_libraries(LightPhongModel glfw3.lib)
 
 target_link_libraries(LightTexture glfw3.lib)
+
+target_link_libraries(MultipleLight glfw3.lib)
