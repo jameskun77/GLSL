@@ -14,6 +14,7 @@
 #include <iostream>
 #include <string>
 
+
 void processInput(GLFWwindow *window);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
@@ -23,9 +24,9 @@ unsigned int loadTexture(const char* path);
 const int windowWidth = 800;
 const int windowHeight = 600;
 
-unsigned int cubeVAO,lightVAO, VBO;
+unsigned int cubeVAO, lightVAO, VBO;
 
-unsigned int texture1,texture2;
+unsigned int texture1, texture2;
 
 //camera
 Camera camera(glm::vec3(0.0f, 0.0f, 5.0f));
@@ -52,7 +53,7 @@ int main(int argc, char* argv[])
 	{
 		std::cout << "glfw create window failed!" << std::endl;
 		glfwTerminate();
-		
+
 		return -1;
 	}
 
@@ -62,7 +63,7 @@ int main(int argc, char* argv[])
 
 	//set cursor 
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	
+
 	//lamda
 	glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height){
 
@@ -79,16 +80,16 @@ int main(int argc, char* argv[])
 
 	// positions all containers
 	glm::vec3 cubePositions[] = {
-		glm::vec3( 0.0f,  0.0f,  0.0f),
-		glm::vec3( 2.0f,  5.0f, -15.0f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(2.0f, 5.0f, -15.0f),
 		glm::vec3(-1.5f, -2.2f, -2.5f),
 		glm::vec3(-3.8f, -2.0f, -12.3f),
-		glm::vec3( 2.4f, -0.4f, -3.5f),
-		glm::vec3(-1.7f,  3.0f, -7.5f),
-		glm::vec3( 1.3f, -2.0f, -2.5f),
-		glm::vec3( 1.5f,  2.0f, -2.5f),
-		glm::vec3( 1.5f,  0.2f, -1.5f),
-		glm::vec3(-1.3f,  1.0f, -1.5f)
+		glm::vec3(2.4f, -0.4f, -3.5f),
+		glm::vec3(-1.7f, 3.0f, -7.5f),
+		glm::vec3(1.3f, -2.0f, -2.5f),
+		glm::vec3(1.5f, 2.0f, -2.5f),
+		glm::vec3(1.5f, 0.2f, -1.5f),
+		glm::vec3(-1.3f, 1.0f, -1.5f)
 	};
 
 	// positions of the point lights
@@ -104,14 +105,14 @@ int main(int argc, char* argv[])
 
 	Shader lampShader(FileSystem::getPath("resources/shader/step2_multipleLight/lamp.vs").c_str(),
 		FileSystem::getPath("resources/shader/step2_multipleLight/lamp.fs").c_str());
-	
+
 	initData();
 	texture1 = loadTexture(FileSystem::getPath("resources/container2.png").c_str());
 	texture2 = loadTexture(FileSystem::getPath("resources/container2_specular.png").c_str());
-	
-	
+
+
 	while (!glfwWindowShouldClose(window))
-	{	
+	{
 		float currentTime = glfwGetTime();
 		deltatime = currentTime - lastframe;
 		lastframe = currentTime;
@@ -125,7 +126,7 @@ int main(int argc, char* argv[])
 		lightShader.use();
 		lightShader.setInt("material.diffuse", 0);
 		lightShader.setInt("material.specular", 1);
-	
+
 		lightShader.setVec3("viewPos", camera.mPosition);
 		lightShader.setFloat("material.shininess", 32.0f);
 
@@ -251,49 +252,49 @@ void initData()
 {
 	//vertex buffer
 	float vertexData[] =
-	{  
+	{
 		//position             //normal            //UV
-		-0.5f, -0.5f, -0.5f,   0.0f,  0.0f, -1.0f, 0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,   0.0f,  0.0f, -1.0f, 1.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,   0.0f,  0.0f, -1.0f, 1.0f,  1.0f,
-		 0.5f,  0.5f, -0.5f,   0.0f,  0.0f, -1.0f, 1.0f,  1.0f,
-		-0.5f,  0.5f, -0.5f,   0.0f,  0.0f, -1.0f, 0.0f,  1.0f,
-		-0.5f, -0.5f, -0.5f,   0.0f,  0.0f, -1.0f, 0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+		-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
 
-		-0.5f, -0.5f,  0.5f,   0.0f,  0.0f,  1.0f, 0.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,   0.0f,  0.0f,  1.0f, 1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,   0.0f,  0.0f,  1.0f, 1.0f,  1.0f,
-		 0.5f,  0.5f,  0.5f,   0.0f,  0.0f,  1.0f, 1.0f,  1.0f,
-		-0.5f,  0.5f,  0.5f,   0.0f,  0.0f,  1.0f, 0.0f,  1.0f,
-		-0.5f, -0.5f,  0.5f,   0.0f,  0.0f,  1.0f, 0.0f,  0.0f,
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
 
-		-0.5f,  0.5f,  0.5f,  -1.0f,  0.0f,  0.0f, 1.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f,  -1.0f,  0.0f,  0.0f, 1.0f,  1.0f,
-		-0.5f, -0.5f, -0.5f,  -1.0f,  0.0f,  0.0f, 0.0f,  1.0f,
-		-0.5f, -0.5f, -0.5f,  -1.0f,  0.0f,  0.0f, 0.0f,  1.0f,
-		-0.5f, -0.5f,  0.5f,  -1.0f,  0.0f,  0.0f, 0.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f,  -1.0f,  0.0f,  0.0f, 1.0f,  0.0f,
+		-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+		-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+		-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 
-		 0.5f,  0.5f,  0.5f,   1.0f,  0.0f,  0.0f, 1.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,   1.0f,  0.0f,  0.0f, 1.0f,  1.0f,
-		 0.5f, -0.5f, -0.5f,   1.0f,  0.0f,  0.0f, 0.0f,  1.0f,
-		 0.5f, -0.5f, -0.5f,   1.0f,  0.0f,  0.0f, 0.0f,  1.0f,
-		 0.5f, -0.5f,  0.5f,   1.0f,  0.0f,  0.0f, 0.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,   1.0f,  0.0f,  0.0f, 1.0f,  0.0f,
+		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+		0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 
-		-0.5f, -0.5f, -0.5f,   0.0f, -1.0f,  0.0f, 0.0f,  1.0f,
-		 0.5f, -0.5f, -0.5f,   0.0f, -1.0f,  0.0f, 1.0f,  1.0f,
-		 0.5f, -0.5f,  0.5f,   0.0f, -1.0f,  0.0f, 1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,   0.0f, -1.0f,  0.0f, 1.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f,   0.0f, -1.0f,  0.0f, 0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f,   0.0f, -1.0f,  0.0f, 0.0f,  1.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+		0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
 
-		-0.5f,  0.5f, -0.5f,   0.0f,  1.0f,  0.0f, 0.0f,  1.0f,
-		 0.5f,  0.5f, -0.5f,   0.0f,  1.0f,  0.0f, 1.0f,  1.0f,
-		 0.5f,  0.5f,  0.5f,   0.0f,  1.0f,  0.0f, 1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,   0.0f,  1.0f,  0.0f, 1.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f,   0.0f,  1.0f,  0.0f, 0.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f,   0.0f,  1.0f,  0.0f, 0.0f,  1.0f
+		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+		0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+		0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
 	};
 
 	glGenVertexArrays(1, &cubeVAO);
@@ -302,7 +303,7 @@ void initData()
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
-	
+
 	//position attribute
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -353,7 +354,7 @@ unsigned int loadTexture(const char* path)
 		}
 
 		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,format, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -391,7 +392,7 @@ void processInput(GLFWwindow *window)
 
 void mouse_callback(GLFWwindow *window, double xpos, double ypos)
 {
-	if (glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 	{
 		if (firstMouse)
 		{
@@ -409,7 +410,7 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos)
 		camera.ProcessMouseMovement(xoffset, yoffset);
 	}
 
-	if (glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
 	{
 		lastX = xpos;
 		lastY = ypos;
@@ -420,4 +421,3 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 {
 	camera.ProcessMouseScroll(yoffset);
 }
-		
