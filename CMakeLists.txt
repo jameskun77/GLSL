@@ -32,6 +32,9 @@ set(STEP2_MUTIPLELIGHT_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
 set(LOADMESH_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
 	${SOURCE_DIR}/load_mesh/main.cpp)
 	
+set(DEPTHSTENCIL_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
+	${SOURCE_DIR}/step3_depth_stencil/main.cpp)
+	
 message(STATUS "Current directory: " ${CMAKE_SOURCE_DIR})
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/includes)
@@ -52,6 +55,8 @@ add_executable(MultipleLight ${STEP2_MUTIPLELIGHT_SOURCE_LIST})
 
 add_executable(LoadMesh ${LOADMESH_SOURCE_LIST})
 
+add_executable(DepthStencilTest ${DEPTHSTENCIL_SOURCE_LIST})
+
 target_link_libraries(DrawRect glfw3.lib)
 
 target_link_libraries(DrawCube glfw3.lib)
@@ -66,3 +71,5 @@ target_link_libraries(MultipleLight glfw3.lib)
 
 target_link_libraries(LoadMesh glfw3.lib)
 target_link_libraries(LoadMesh assimp.lib)
+
+target_link_libraries(DepthStencilTest glfw3.lib)
