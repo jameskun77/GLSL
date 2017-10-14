@@ -31,8 +31,8 @@ public:
 			glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);
 			
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT); 
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -145,5 +145,68 @@ public:
 		glBindVertexArray(0);
 		
 		return planeVAO;
+	}
+
+	static unsigned int genQuadVAO(unsigned int& VBO)
+	{
+		unsigned int quadVAO;
+
+		float quadVertices[] = {
+			
+			0.0f,  0.5f, 0.0f, 0.0f, 0.0f,
+			0.0f, -0.5f, 0.0f, 0.0f, 1.0f,
+			1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
+
+			0.0f,  0.5f, 0.0f, 0.0f, 0.0f,
+			1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
+			1.0f,  0.5f, 0.0f, 1.0f, 0.0f
+		};
+
+		glGenVertexArrays(1, &quadVAO);
+		glGenBuffers(1, &VBO);
+
+		glBindVertexArray(quadVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+		glBindVertexArray(0);
+
+		return quadVAO;
+	}
+
+	static unsigned int genRectVAO(unsigned int& VBO)
+	{
+		unsigned int rectVAO;
+
+		float quadVertices[] = { //vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+			// positions   // texCoords
+			-1.0f,  1.0f, 0.0f, 1.0f,
+			-1.0f, -1.0f, 0.0f, 0.0f,
+			 1.0f, -1.0f, 1.0f, 0.0f,
+
+			-1.0f,  1.0f, 0.0f, 1.0f,
+			 1.0f, -1.0f, 1.0f, 0.0f,
+			 1.0f,  1.0f, 1.0f, 1.0f
+			};
+
+		glGenVertexArrays(1, &rectVAO);
+		glGenBuffers(1, &VBO);
+
+		glBindVertexArray(rectVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+		
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+		
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+
+		return rectVAO;
 	}
 };
