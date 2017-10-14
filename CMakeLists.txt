@@ -41,6 +41,9 @@ set(BLEND_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
 set(RENDERTEXTURE_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
 	${SOURCE_DIR}/step3_renderTexture/main.cpp)
 	
+set(CUBETEXTURE_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
+	${SOURCE_DIR}/step3_cubeTexture/main.cpp)
+	
 message(STATUS "Current directory: " ${CMAKE_SOURCE_DIR})
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/includes)
@@ -67,6 +70,8 @@ add_executable(BlendTest ${BLEND_SOURCE_LIST})
 
 add_executable(RenderTexture ${RENDERTEXTURE_SOURCE_LIST})
 
+add_executable(CubeTexture ${CUBETEXTURE_SOURCE_LIST})
+
 target_link_libraries(DrawRect glfw3.lib)
 
 target_link_libraries(DrawCube glfw3.lib)
@@ -87,3 +92,5 @@ target_link_libraries(DepthStencilTest glfw3.lib)
 target_link_libraries(BlendTest glfw3.lib)
 
 target_link_libraries(RenderTexture glfw3.lib)
+
+target_link_libraries(CubeTexture glfw3.lib)
