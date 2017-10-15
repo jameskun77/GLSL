@@ -146,6 +146,74 @@ public:
 		
 		return cubeVAO;
 	}
+
+	static unsigned int genCubeWithNormalVAO(unsigned int& VBO)
+	{
+		unsigned int cubeNormalVAO;
+
+		float cubeVertices[] = {
+			// positions          //UV
+			// positions          // normals
+			-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+			 0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+			 0.5f,  0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+			 0.5f,  0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+			-0.5f,  0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+			-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+
+			-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+			 0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+			 0.5f,  0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+			 0.5f,  0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+			-0.5f,  0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+			-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+
+			-0.5f,  0.5f,  0.5f, -1.0f, 0.0f, 0.0f,
+			-0.5f,  0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+			-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+			-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+			-0.5f, -0.5f,  0.5f, -1.0f, 0.0f, 0.0f,
+			-0.5f,  0.5f,  0.5f, -1.0f, 0.0f, 0.0f,
+
+			0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 0.0f,
+			0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+			0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+			0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+			0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 0.0f,
+			0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 0.0f,
+
+			-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+			 0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 0.0f,
+			-0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 0.0f,
+			-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+
+			-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f, 0.5f,  0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f, 0.5f,  0.5f, 0.0f, 1.0f, 0.0f,
+			-0.5f, 0.5f,  0.5f, 0.0f, 1.0f, 0.0f,
+			-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f
+			};
+
+		glGenVertexArrays(1, &cubeNormalVAO);
+		glGenBuffers(1, &VBO);
+
+		glBindVertexArray(cubeNormalVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+
+		glBindVertexArray(0);
+
+		return cubeNormalVAO;
+	}
 	
 	static unsigned int genPlaneVAO(unsigned int& VBO)
 	{
