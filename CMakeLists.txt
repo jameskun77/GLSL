@@ -47,6 +47,9 @@ set(CUBETEXTURE_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
 set(ENVIROMENTMAP_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
 	${SOURCE_DIR}/step3_eviromentMap/main.cpp)
 	
+set(BLINNPHONG_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
+	${SOURCE_DIR}/step4_blinn_phong/main.cpp)
+	
 message(STATUS "Current directory: " ${CMAKE_SOURCE_DIR})
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/includes)
@@ -77,6 +80,8 @@ add_executable(CubeTexture ${CUBETEXTURE_SOURCE_LIST})
 
 add_executable(EnviromentMap ${ENVIROMENTMAP_SOURCE_LIST})
 
+add_executable(BlinnPhong ${BLINNPHONG_SOURCE_LIST})
+
 target_link_libraries(DrawRect glfw3.lib)
 
 target_link_libraries(DrawCube glfw3.lib)
@@ -101,3 +106,5 @@ target_link_libraries(RenderTexture glfw3.lib)
 target_link_libraries(CubeTexture glfw3.lib)
 
 target_link_libraries(EnviromentMap glfw3.lib)
+
+target_link_libraries(BlinnPhong glfw3.lib)
