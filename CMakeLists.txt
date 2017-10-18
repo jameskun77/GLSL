@@ -52,6 +52,9 @@ set(BLINNPHONG_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
 	
 set(SHADOWMAP_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
 	${SOURCE_DIR}/step4_shadow_map/main.cpp)
+
+set(NORMALMAP_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
+	${SOURCE_DIR}/step4_normal_map/main.cpp)
 	
 message(STATUS "Current directory: " ${CMAKE_SOURCE_DIR})
 
@@ -87,6 +90,8 @@ add_executable(BlinnPhong ${BLINNPHONG_SOURCE_LIST})
 
 add_executable(ShadowMap ${SHADOWMAP_SOURCE_LIST})
 
+add_executable(NormalMap ${NORMALMAP_SOURCE_LIST})
+
 target_link_libraries(DrawRect glfw3.lib)
 
 target_link_libraries(DrawCube glfw3.lib)
@@ -115,3 +120,5 @@ target_link_libraries(EnviromentMap glfw3.lib)
 target_link_libraries(BlinnPhong glfw3.lib)
 
 target_link_libraries(ShadowMap glfw3.lib)
+
+target_link_libraries(NormalMap glfw3.lib)
