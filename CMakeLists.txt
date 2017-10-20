@@ -62,6 +62,9 @@ set(HDR_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
 set(BLOOM_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
 	${SOURCE_DIR}/step4_bloom/main.cpp)
 	
+set(DEFERREDRENDER_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
+	${SOURCE_DIR}/step4_deferred_render/main.cpp)
+	
 message(STATUS "Current directory: " ${CMAKE_SOURCE_DIR})
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/includes)
@@ -102,6 +105,8 @@ add_executable(HDR ${HDR_SOURCE_LIST})
 
 add_executable(Bloom ${BLOOM_SOURCE_LIST})
 
+add_executable(DeferredRender ${DEFERREDRENDER_SOURCE_LIST})
+
 target_link_libraries(DrawRect glfw3.lib)
 
 target_link_libraries(DrawCube glfw3.lib)
@@ -136,3 +141,6 @@ target_link_libraries(NormalMap glfw3.lib)
 target_link_libraries(HDR glfw3.lib)
 
 target_link_libraries(Bloom glfw3.lib)
+
+target_link_libraries(DeferredRender glfw3.lib)
+target_link_libraries(DeferredRender assimp.lib)
