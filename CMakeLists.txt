@@ -69,6 +69,9 @@ set(SSAO_SOURCE_LIST ${SOURCE_DIR}/glad.cpp
 	${SOURCE_DIR}/step4_ssao/main.cpp)
 	
 set(DEBUG_SOURCE_LIST ${SOURCE_DIR}/debugging/main.cpp)
+
+set(TEST_SOURCE_LIST ${SOURCE_DIR}/glad.cpp 
+	${SOURCE_DIR}/test/main.cpp)
 	
 message(STATUS "Current directory: " ${CMAKE_SOURCE_DIR})
 
@@ -116,6 +119,8 @@ add_executable(SSAO ${SSAO_SOURCE_LIST})
 
 add_executable(Debugging ${DEBUG_SOURCE_LIST})
 
+add_executable(Test ${TEST_SOURCE_LIST})
+
 target_link_libraries(DrawRect glfw3.lib)
 
 target_link_libraries(DrawCube glfw3.lib)
@@ -159,3 +164,5 @@ target_link_libraries(SSAO assimp.lib)
 
 target_link_libraries(Debugging glfw3.lib)
 target_link_libraries(Debugging GLAD.lib)
+
+target_link_libraries(Test glfw3.lib)
