@@ -18,6 +18,7 @@ void processInput(GLFWwindow *window);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 void initData();
+void calculateFPS();
 
 const int windowWidth = 800;
 const int windowHeight = 600;
@@ -42,9 +43,9 @@ float lastframe = 0.0f;
 int main(int argc, char* argv[])
 {
 	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "LearnOpenGL", NULL, NULL);
 	if (NULL == window)
@@ -83,12 +84,32 @@ int main(int argc, char* argv[])
 	shader.setInt("texture1", 0);
 	shader.setInt("texture2", 1);
 
-	while (!glfwWindowShouldClose(window))
-	{	
-		float currentTime = glfwGetTime();
-		deltatime = currentTime - lastframe;
-		lastframe = currentTime;
+	shader.setFloat("factor", blendFactor);
 
+	GLuint projectHandle = glGetUniformLocation(shader.program, "project");
+	GLuint modelHandle = glGetUniformLocation(shader.program, "model");
+	GLuint viewHandle = glGetUniformLocation(shader.program, "view");
+
+	while (!glfwWindowShouldClose(window))
+	{
+		//fps 
+		static int fps = 0;
+		static int countNum = 0;
+		static float lastTime = GetTickCount() * 0.001;
+
+		float currentTime = GetTickCount() * 0.001;
+
+		countNum++;
+
+		if (currentTime - lastTime >= 1.0)
+		{
+			fps = countNum;
+			countNum = 0;
+			lastTime = currentTime;
+
+			std::cout << "FPS: " << fps << std::endl;
+		}
+		
 		processInput(window);
 
 		//Render
@@ -102,24 +123,28 @@ int main(int argc, char* argv[])
 
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
-		shader.setFloat("factor", blendFactor);
 
 		//Model View Projection
 		glm::mat4 projections;
 		projections = glm::perspective(glm::radians(camera.mZoom), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
-		shader.setMatrix4("project", projections);
+		//shader.setMatrix4("project", projections);
+		glUniformMatrix4fv(projectHandle, 1, GL_FALSE, & projections[0][0]);
 
 		glm::mat4 mods;
 		mods = glm::rotate(mods, (float)glfwGetTime(), glm::vec3(1.0, 0.5, 0.0));
-		shader.setMatrix4("model", mods);
+		//shader.setMatrix4("model", mods);
+		glUniformMatrix4fv(modelHandle, 1, GL_FALSE, &mods[0][0]);
 
 		glm::mat4 views = camera.GetViewMatrix();
-		shader.setMatrix4("view", views);
+		//shader.setMatrix4("view", views);
+		glUniformMatrix4fv(viewHandle, 1, GL_FALSE, &views[0][0]);
 
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+		//calculateFPS();
 	}
 
 	glDeleteVertexArrays(1, &VAO);
@@ -314,5 +339,25 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos)
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 {
 	camera.ProcessMouseScroll(yoffset);
+}
+
+void calculateFPS()
+{
+	static int fps = 0;
+	static float lastTime = GetTickCount();
+	static int frameCount = 0;
+
+	++frameCount;
+
+	float currentTime = GetTickCount();
+	if ((currentTime - lastTime) >= 1000)
+	{
+		lastTime = currentTime;
+		fps = frameCount;
+		frameCount = 0;
+		std::cout << "current FPS = " << fps << std::endl;
+	}
+
+	
 }
 		

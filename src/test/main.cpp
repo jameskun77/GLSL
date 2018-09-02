@@ -22,6 +22,8 @@ const int windowHeight = 600;
 unsigned int VAO, VBO;
 
 
+
+
 int main(int argc, char* argv[])
 {
 	glfwInit();
@@ -66,11 +68,18 @@ int main(int argc, char* argv[])
 		processInput(window);
 
 		//Render
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(1.0f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		
-		glBindVertexArray(VAO);
+		//glBindVertexArray(VAO);
+		GLfloat vVertices[] = { 
+				0.0f,  0.5f, 0.0f,
+			   -0.5f, -0.5f, 0.0f,
+				0.5f, -0.5f, 0.0f };
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vVertices);
+		glEnableVertexAttribArray(0);
 
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 

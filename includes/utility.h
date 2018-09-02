@@ -443,4 +443,69 @@ public:
 
 		return skyVAO;
 	}
+
+	static unsigned int genAABBVAO(glm::vec3 minPos,glm::vec3 maxPos)
+	{
+		static unsigned int AABBVAO;
+		static unsigned int AABBVB0;
+
+		float AABBVertices[] = {
+			// positions          
+			
+			minPos.x,maxPos.y,minPos.z,
+			minPos.x,minPos.y,minPos.z,
+			maxPos.x,minPos.y,minPos.z,
+			maxPos.x,minPos.y,minPos.z,
+			maxPos.x,maxPos.y,minPos.z,
+			minPos.x,maxPos.y,minPos.z,
+
+			minPos.x, minPos.y, maxPos.z,
+			minPos.x, minPos.y, minPos.z,
+			minPos.x, maxPos.y, minPos.z,
+			minPos.x, maxPos.y, minPos.z,
+			minPos.x, maxPos.y, maxPos.z,
+			minPos.x, minPos.y, maxPos.z,
+
+			
+			maxPos.x, minPos.y, minPos.z,
+			maxPos.x, minPos.y, maxPos.z,
+			maxPos.x, maxPos.y, maxPos.z,
+			maxPos.x, maxPos.y, maxPos.z,
+			maxPos.x, maxPos.y, minPos.z,
+			maxPos.x, minPos.y, minPos.z,
+
+			minPos.x, minPos.y, maxPos.z,
+			minPos.x, maxPos.y, maxPos.z,
+			maxPos.x, maxPos.y, maxPos.z,
+			maxPos.x, maxPos.y, maxPos.z,
+			maxPos.x, minPos.y, maxPos.z,
+			minPos.x, minPos.y, maxPos.z,
+
+			minPos.x, maxPos.y, minPos.z,
+			maxPos.x, maxPos.y, minPos.z,
+			maxPos.x, maxPos.y, maxPos.z,
+			maxPos.x, maxPos.y, maxPos.z,
+			minPos.x, maxPos.y, maxPos.z,
+			minPos.x, maxPos.y, minPos.z,
+
+			minPos.x, minPos.y, minPos.z,
+			minPos.x, minPos.y, maxPos.z,
+			maxPos.x, minPos.y, minPos.z,
+			maxPos.x, minPos.y, minPos.z,
+			minPos.x, minPos.y, maxPos.z,
+			maxPos.x, minPos.y, maxPos.z
+		};
+
+		glGenVertexArrays(1, &AABBVAO);
+		glGenBuffers(1, &AABBVB0);
+
+		glBindVertexArray(AABBVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, AABBVB0);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(AABBVertices), &AABBVertices, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		return AABBVAO;
+	}
 };

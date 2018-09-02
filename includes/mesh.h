@@ -47,7 +47,7 @@ public:
 	vector<Texture> mTextures;
 	unsigned int VAO;
 
-	Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
+	Mesh(vector<Vertex>& vertices, vector<unsigned int>& indices, vector<Texture>& textures)
 	{
 		this->mVertices = vertices;
 		this->mIndices = indices;

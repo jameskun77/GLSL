@@ -14,6 +14,7 @@
 
 #include "mesh.h"
 #include "Shader.h"
+#include "AABB.h"
 
 #include <string>
 #include <fstream>
@@ -33,9 +34,12 @@ public:
 	vector<Mesh> mMeshes;
 	string mDirectory;
 	bool mGammaCorrection;
+	float mMinPosx, mMinPosy, mMinPosz;
+	float mMaxPosx, mMaxPosy, mMaxPosz;
+	AABB mAABB;
 
 public:
-	Model(string const &path, bool gamma = false) :mGammaCorrection(gamma)
+	Model(string const &path, bool gamma = false) :mGammaCorrection(gamma),
 	{
 		_loadModel(path);
 	}
@@ -94,6 +98,8 @@ private:
 			vector.z = mesh->mVertices[i].z;
 
 			vertex.mPosition = vector;
+
+			mAABB.add(vertex.mPosition);
 
 			vector.x = mesh->mNormals[i].x;
 			vector.y = mesh->mNormals[i].y;

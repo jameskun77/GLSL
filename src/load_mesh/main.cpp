@@ -8,6 +8,7 @@
 #include "Filesystem.h"
 #include "Camera.h"
 #include "model.h"
+#include "utility.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -35,6 +36,8 @@ bool  firstMouse = true;
 //time
 float deltatime = 0.0f;
 float lastframe = 0.0f;
+
+unsigned int boundingVAO;
 
 int main(int argc, char* argv[])
 {
@@ -77,7 +80,12 @@ int main(int argc, char* argv[])
 	Shader shader(FileSystem::getPath("resources/shader/load_mesh/loadmesh.vs").c_str(),
 		FileSystem::getPath("resources/shader/load_mesh/loadmesh.fs").c_str());
 
+	Shader boundingBoxShader(FileSystem::getPath("resources/shader/load_mesh/bounding.vs").c_str(),
+		FileSystem::getPath("resources/shader/load_mesh/bounding.fs").c_str());
+
 	Model ourModel(FileSystem::getPath("resources/nanosuit/nanosuit.obj"));
+
+	boundingVAO = Utility::genAABBVAO(ourModel.mMinpos, ourModel.mMaxpos);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -103,9 +111,11 @@ int main(int argc, char* argv[])
 		glm::mat4 model;
 		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
+		//model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(1.0, 0.5, 0.0));
 		shader.setMatrix4("model", model);
 		ourModel.Draw(shader);
 
+		ourModel.mAABB.drawBoundingBox(model, view, projection,boundingBoxShader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
