@@ -39,7 +39,7 @@ public:
 	AABB mAABB;
 
 public:
-	Model(string const &path, bool gamma = false) :mGammaCorrection(gamma),
+	Model(string const &path, bool gamma = false) :mGammaCorrection(gamma)
 	{
 		_loadModel(path);
 	}

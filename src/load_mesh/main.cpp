@@ -39,6 +39,15 @@ float lastframe = 0.0f;
 
 unsigned int boundingVAO;
 
+glm::vec3 gMin;
+glm::vec3 gMax;
+
+glm::mat4 projection;
+glm::mat4 view;
+glm::mat4 model;
+
+Model* ourModel;
+
 int main(int argc, char* argv[])
 {
 	glfwInit();
@@ -83,9 +92,7 @@ int main(int argc, char* argv[])
 	Shader boundingBoxShader(FileSystem::getPath("resources/shader/load_mesh/bounding.vs").c_str(),
 		FileSystem::getPath("resources/shader/load_mesh/bounding.fs").c_str());
 
-	Model ourModel(FileSystem::getPath("resources/nanosuit/nanosuit.obj"));
-
-	boundingVAO = Utility::genAABBVAO(ourModel.mMinpos, ourModel.mMaxpos);
+	ourModel = new Model(FileSystem::getPath("resources/nanosuit/nanosuit.obj"),false);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -100,22 +107,21 @@ int main(int argc, char* argv[])
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		shader.use();
-
 		// view/projection transformations
-		glm::mat4 projection = glm::perspective(glm::radians(camera.mZoom), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
-		glm::mat4 view = camera.GetViewMatrix();
+		projection = glm::perspective(glm::radians(camera.mZoom), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+		view = camera.GetViewMatrix();
 		shader.setMatrix4("projection", projection);
 		shader.setMatrix4("view", view);
 
 		// render the loaded model
-		glm::mat4 model;
-		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
-		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
-		//model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(1.0, 0.5, 0.0));
+		glm::mat4 modelTmp;
+		modelTmp = glm::translate(modelTmp, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
+		modelTmp = glm::scale(modelTmp, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
+		model = glm::rotate(modelTmp, (float)glfwGetTime(), glm::vec3(1.0, 0.5, 0.0));
 		shader.setMatrix4("model", model);
-		ourModel.Draw(shader);
+		ourModel->Draw(shader);
 
-		ourModel.mAABB.drawBoundingBox(model, view, projection,boundingBoxShader);
+		ourModel->mAABB.drawBoundingBox(model, view, projection,boundingBoxShader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -205,6 +211,26 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos)
 		lastY = ypos;
 
 		camera.ProcessMouseMovement(xoffset, yoffset);
+
+		glm::vec3 ray_origin;
+		glm::vec3 ray_direction;
+		ScreenPosToWorldRay(
+			xpos, ypos,
+			windowWidth, windowHeight,
+			view,
+			projection,
+			ray_origin,
+			ray_direction
+			);
+
+		Ray ray(ray_origin, ray_direction);
+
+		if (ourModel->mAABB.hit(ray, model))
+		{
+			std::cout << "picked" << std::endl;
+			//::MessageBox(NULL, "模型已选中", "模型已选中", NULL);
+		}
+
 	}
 
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
